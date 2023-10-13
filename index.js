@@ -1,11 +1,42 @@
 import conf from "./config.json" assert { type: "json" };
 import Imap from 'imap';
-import { inspect } from 'util';
+import { simpleParser } from "mailparser";
+import { getParserConfig } from './parsers/index.js';
 
 const imap = new Imap(conf.imap);
 
 const openInbox = (cb) => {
   imap.openBox('INBOX', true, cb);
+}
+
+const processMessage = (msg, seqno, cb) => {
+  console.log("Processing msg #" + seqno);
+
+  msg.on('body', (stream, info) => {
+    let buffer = '';
+
+    stream.on('data', (chunk) => {
+      buffer += chunk.toString('utf8');
+    });
+    stream.once('end', () => {
+      const body = buffer.toString();
+      simpleParser(body, { 
+        skipHtmlToText: true,
+        skipTextToHtml: true,
+        skipImageLinks: true
+      })
+        .then(parsed => {
+          cb(seqno, parsed);
+        })
+        .catch(err => {
+          console.log('err', err);
+        });
+    });
+  });
+  
+  // msg.once('attributes', (attrs) => {
+  //   console.log('Attributes: %s', inspect(attrs, false, 8));
+  // });
 }
 
 const fetchEmail = (mnsNumber, bodies, cb) => {
@@ -15,56 +46,23 @@ const fetchEmail = (mnsNumber, bodies, cb) => {
   })
 
   f.on('message', (msg, seqno) => {
-    msg.on('body', (stream, info) => {
-      let buffer = '';
-
-      stream.on('data', (chunk) => {
-        buffer += chunk.toString('utf8');
-      });
-      stream.once('end', () => {
-        if (info.which !== 'TEXT'){
-          const header = Imap.parseHeader(buffer);
-          cb(seqno, header);
-        } else {
-          cb(seqno, buffer);
-        }
-      });
-    });
-    // msg.once('attributes', (attrs) => {
-    //   console.log('Attributes: %s', inspect(attrs, false, 8));
-    // });
+    processMessage(msg, seqno, cb);
+  });
+  f.once('error', (err) => {
+    console.log('Fetch error: ' + err);
+  });
+  f.once('end', function() {
+    console.log("Done fetching all unseen messages.");
+    // imap.end(); we don't want to close the connection
   });
 }
 
 const fetchHeader = (mnsNumber, cb) => {
-  fetchEmail(mnsNumber, ['HEADER.FIELDS (FROM TO SUBJECT DATE)'], cb);
+  fetchEmail(mnsNumber, 'HEADER.FIELDS (FROM)', cb);
 }
 
 const fetchBody = (mnsNumber, cb) => {
-  fetchEmail(mnsNumber, ['TEXT'], cb);
-}
-
-const parserConfigs = [
-  {
-    name: 'Bancolombia',
-    email: [
-      'jonathan.rico@getaround.com',
-    ],
-  },
-]
-
-const normalizeEmail = (email) => {
-  if (!email) return;
-  if (!/<(.*)>/.test(email)) return email.toLowerCase();
-  return /<(.*)>/.exec(email)[1].toLowerCase();
-}
-
-const getParserConfig = (email) => {
-  const parserConfig = parserConfigs.find((parserConfig) => {
-    return parserConfig.email.includes(email);
-  });
-
-  return parserConfig;
+  fetchEmail(mnsNumber, 'TEXT', cb);
 }
 
 
@@ -75,17 +73,19 @@ imap.once('ready', () => {
     // on get a new email
     imap.on('mail', (numNewMsgs) => {
       console.log(`You have ${numNewMsgs} new messages`);
-      fetchHeader(box.messages.total, (seqno, header) => {
-        const email = normalizeEmail(header.from[0]);
+      fetchHeader([box.messages.total], (seqno, header) => {
+        const email = header.from.value[0].address;
 
         // if email is not in the parser config, ignore it
         const parserConfig = getParserConfig(email);
 
         if (parserConfig) {
           // fetch body and parse it
-          fetchBody(box.messages.total, (seqno, body) => {
-            console.log('(#' + seqno + ') ' + 'Parsed header: %s', inspect(header));
-            console.log('Body [%s] Finished', inspect(body));
+          fetchBody(box.messages.total, (seqno, bodys) => {
+            const body = bodys.text;
+            const transaction = parserConfig.getTransaction(body);
+            
+            console.log('transaction', transaction);
           });
         }
       });
