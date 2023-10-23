@@ -1,6 +1,9 @@
 {
   "name": "email-script-js",
   "version": "1.0.0",
+  "engines": {
+    "node": "16"
+  },
   "type": "module",
   "description": "parse emails and execute scripts",
   "main": "index.js",
@@ -8,13 +11,21 @@
   "author": "nathanredblur",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
+    "lint": "eslint .",
+    "start": "node app/index.js"
   },
   "dependencies": {
     "cheerio": "^1.0.0-rc.12",
     "imap": "^0.8.19",
     "mailparser": "^3.6.5",
     "puppeteer": "^21.3.8"
+  },
+  "devDependencies": {
+    "eslint": "^8.0.1",
+    "eslint-config-standard": "^17.1.0",
+    "eslint-plugin-import": "^2.25.2",
+    "eslint-plugin-n": "^15.0.0 || ^16.0.0 ",
+    "eslint-plugin-promise": "^6.0.0"
   },
   "license": "MIT"
 }

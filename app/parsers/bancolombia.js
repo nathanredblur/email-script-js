@@ -7,21 +7,21 @@ export const bancolombia = {
     'Bancolombia - Comprobante de pago'
   ],
   validate: function (email) {
-    return true;
+    return true
   },
   parserFunction: function (email) {
     const data = {
-      date: "",
-      amount: "",
-      type: "",
-      description: "",
-    };
+      date: '',
+      amount: '',
+      type: '',
+      description: ''
+    }
 
     if (email) {
-      return data;
-    } else{
-      console.log("email not found");
-      return data;
+      return data
+    } else {
+      console.log('email not found')
+      return data
     }
-  } 
+  }
 }
