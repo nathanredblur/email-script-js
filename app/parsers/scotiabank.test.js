@@ -106,5 +106,4 @@ export const html = '' +
     '<p>Pour obtenir la traduction en français: <a href="http://www.gbm.scotiabank.com/EmailDisclaimer/French.htm" target="_blank">http://www.gbm.scotiabank.com/EmailDisclaimer/French.htm </a><br>Traducción en español: <a href="http://www.gbm.scotiabank.com/EmailDisclaimer/Spanish.htm" target="_blank">http://www.gbm.scotiabank.com/EmailDisclaimer/Spanish.htm</a></p><br>\n' +
     '</div>\n' +
     '\n' +
-    '--000000000000e2c06b060791e91a--';
-
+    '--000000000000e2c06b060791e91a--'

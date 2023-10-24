@@ -19,6 +19,7 @@ const puppeteerConfig = {
 
 if (DEBUG_BUDGET_BANKERS) puppeteerConfig.headless = false
 
+// ideas from https://www.browserless.io/blog/2022/05/13/manage-sessions/
 const storeSession = async (page) => {
   const client = await page.target().createCDPSession()
   const { cookies } = await client.send('Storage.getCookies')
@@ -177,6 +178,8 @@ export const addTransaction = async (transactionObj) => {
 
   // click on save
   await page.click(`${modalSelector} .ui.primary.button`)
+  await page.keyboard.press('Tab')
+
   // wait for modal to close
   await page.waitForSelector(modalSelector, { hidden: true })
   await page.waitForNetworkIdle()

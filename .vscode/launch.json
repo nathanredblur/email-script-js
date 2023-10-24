@@ -21,7 +21,7 @@
         "<node_internals>/**"
       ],
       "env": {
-        "DEBUG_BUDGET_BANKERS": "true",
+        // "DEBUG_BUDGET_BANKERS": "true",
         "DEBUG_PARSER": "Scotiabank"
       },
       "program": "${workspaceFolder}/app/index.js"
