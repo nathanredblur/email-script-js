@@ -15,11 +15,8 @@
     },
     {
       "type": "node",
-      "request": "launch file",
-      "name": "Launch Program",
-      "skipFiles": [
-        "<node_internals>/**"
-      ],
+      "request": "launch",
+      "name": "Launch File",
       "program": "${file}"
     },
     {

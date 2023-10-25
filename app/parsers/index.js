@@ -1,9 +1,11 @@
 import scotiabank from './scotiabank.js'
+import bancolombia from './bancolombia.js'
 
 const DEBUG_PARSER = process.env.DEBUG_PARSER
 
 export const parserConfigs = [
-  scotiabank
+  scotiabank,
+  bancolombia
 ]
 
 export const getParserConfig = (email) => {
