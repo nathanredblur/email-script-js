@@ -59,13 +59,50 @@ const mercadoPago = (transaction) => {
   }
 }
 
+const bancolombia = (transaction) => {
+  if (transaction.account === 'Bancolombia') {
+    let category = 'other'
+    let note = transaction.note
+
+    // Restaurante Rincon del Pacifico
+    if (transaction.others.accountNumber === '3393') {
+      category = 'restaurant'
+      note = `Restaurante Rincon del Pacifico ${transaction.note}`
+    }
+
+    // Renta de apartamento
+    if (transaction.others.accountName === 'HABITAMOS PROPIEDAD') {
+      category = 'rent'
+    }
+
+    // aseo
+    if (transaction.others.accountNumber === '31018228265') {
+      category = 'Aseo'
+      note = `Julieth Aseo ${transaction.note}`
+    }
+
+    // salud y pension
+    if (transaction.others.accountName === 'ENLACE OPERATIVO S.A') {
+      category = 'charges'
+      note = `Salud y pensión ${transaction.note}`
+    }
+
+    return {
+      ...transaction,
+      note,
+      category
+    }
+  }
+}
+
 const templates = [
   uberTrip,
   rappiRestaurant,
   rappiPrime,
   movistarInternet,
   movistarPhone,
-  mercadoPago
+  mercadoPago,
+  bancolombia
 ]
 
 export const getTemplate = (transaction) => {
