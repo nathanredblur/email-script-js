@@ -1,5 +1,5 @@
-import scotiabank from './scotiabank.js'
-import bancolombia from './bancolombia.js'
+import scotiabank from './scotiabank/scotiabank.js'
+import bancolombia from './bancolombia/bancolombia.js'
 
 const DEBUG_PARSER = process.env.DEBUG_PARSER
 

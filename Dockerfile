@@ -1,19 +1,21 @@
-FROM      mhart/alpine-node:16.4.2
+# https://snyk.io/blog/choosing-the-best-node-js-docker-image/
+FROM      node:lts-alpine
 
 # Options:
 ARG       NODE_ENV=production
-ENV       NODE_ENV $NODE_ENV
-ENV       APP_HOME /hello-world
+ENV       NODE_ENV=${NODE_ENV}
+ENV       DEBUG_PARSER=${DEBUG_PARSER}
+ENV       DEBUG_BUDGET_BANKERS=${DEBUG_BUDGET_BANKERS}
 
-# Install Modules:
-WORKDIR   $APP_HOME
+# Set the working directory inside the container
+WORKDIR   /app
 
-# Copy in files:
-COPY      . $APP_HOME
+# Copy the package.json and package-lock.json and install the dependencies using yarn
+COPY      yarn.lock package.json ./
+RUN       yarn install
 
-RUN       cd /app; npm install
-RUN       npm install forever -g
+# Copy configuration files and app folder
+COPY      ./src ./src
+COPY      ./config.json ./config.json
 
-
-EXPOSE    80
-CMD       ["forever", "/app/index.js", "80"]
+CMD       ["yarn", "start"]

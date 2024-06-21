@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
-import bancolombia from './bancolombia.js'
+import bancolombia from './bancolombia/bancolombia.js'
 
 const { getTransaction } = bancolombia
 

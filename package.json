@@ -2,7 +2,7 @@
   "name": "email-script-js",
   "version": "1.0.0",
   "engines": {
-    "node": "16"
+    "node": "20"
   },
   "type": "module",
   "description": "parse emails and execute scripts",
@@ -12,8 +12,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint .",
-    "eml-reader": "node app/eml-reader.js",
-    "start": "node app/index.js"
+    "eml-reader": "node src/eml-reader.js",
+    "start": "node src/index.js"
   },
   "dependencies": {
     "cheerio": "^1.0.0-rc.12",

@@ -1,5 +1,5 @@
 import * as cheerio from 'cheerio'
-import { createTransactionObj } from '../utils.js'
+import { createTransactionObj } from '../../utils.js'
 
 const getTransaction = (html) => {
   if (!html) return

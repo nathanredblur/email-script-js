@@ -1,5 +1,5 @@
 import * as cheerio from 'cheerio'
-import { createTransactionObj } from '../utils.js'
+import { createTransactionObj } from '../../utils.js'
 
 const amountRegex = /(\d{1,3}(,\d{3})*(\.\d+)?)/
 const dateRegex = /(\d{2}\/\d{2}\/\d{4} \d{2}:\d{2})/

@@ -8,5 +8,9 @@
     "tlsOptions": {
       "rejectUnauthorized": false
     }
+  },
+  "budgetbakers": {
+    "email": "",
+    "password": ""
   }
 }
