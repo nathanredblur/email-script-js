@@ -5,12 +5,15 @@
     "node": "20"
   },
   "type": "module",
+  "imports": {
+    "#root/*.js": "./src/*.js"
+  },
   "description": "parse emails and execute scripts",
   "main": "index.js",
   "repository": "https://github.com/nathanredblur",
   "author": "nathanredblur",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "NODE_ENV=test node --test src/",
     "lint": "eslint .",
     "eml-reader": "node src/eml-reader.js",
     "start": "node src/index.js"
@@ -19,6 +22,7 @@
     "cheerio": "^1.0.0-rc.12",
     "imap": "^0.8.19",
     "mailparser": "^3.6.5",
+    "pino": "^9.2.0",
     "puppeteer": "^21.3.8"
   },
   "devDependencies": {
@@ -27,7 +31,9 @@
     "eslint-config-standard": "^17.1.0",
     "eslint-plugin-import": "^2.25.2",
     "eslint-plugin-n": "^15.0.0 || ^16.0.0 ",
-    "eslint-plugin-promise": "^6.0.0"
+    "eslint-plugin-promise": "^6.0.0",
+    "pino-pretty": "^11.2.1"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "packageManager": "yarn@1.22.19+sha1.4ba7fc5c6e704fce2066ecbfb0b0d8976fe62447"
 }

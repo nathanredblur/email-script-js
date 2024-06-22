@@ -1,5 +1,10 @@
 import * as cheerio from 'cheerio'
-import { createTransactionObj } from '../../utils.js'
+import { createTransactionObj } from '../../utils/utils.js'
+import logger from '#root/utils/logger.js'
+
+const isDateString = (str) => {
+  return /^\d{4}\/\d{2}\/\d{2} \d{2}:\d{2}:\d{2}$/.test(str)
+}
 
 const getTransaction = (html) => {
   if (!html) return
@@ -22,16 +27,28 @@ const getTransaction = (html) => {
     !note ||
     !/\d/.test(date) ||
     !/\d/.test(amount) ||
-    date.length > 18
+    !isDateString(date)
   ) {
-    console.log('data is not correct', { amount, date, note })
-    console.log('html', html)
+    logger.error('parser: Scotiabank data is not correct', {
+      amount,
+      date,
+      note,
+      error: {
+        amount: !amount,
+        date: !date,
+        note: !note,
+        dateHasNumbers: !/\d/.test(date),
+        amountHasNumbers: !/\d/.test(amount),
+        isDateString: !isDateString(date)
+      },
+      html
+    })
     return
   }
 
   const transaction = createTransactionObj({
     type: 'expense',
-    account: 'Scottiabank OneCash',
+    account: 'Scotiabank OneCash',
     amount,
     date,
     note

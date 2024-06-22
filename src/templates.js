@@ -1,3 +1,21 @@
+import logger from '#root/utils/logger.js'
+
+/**
+ * Options for showing a dialog.
+ * @typedef {Object} Transaction
+ * @property {string} type "expense" | "income"
+ * @property {string} account Account name
+ * @property {number} amount Transaction amount
+ * @property {string} date Transaction date
+ * @property {string} note Transaction note
+ * @property {string} category Transaction category
+ * @property {Object} others Other data
+ */
+
+/**
+ * @param {Transaction} transaction
+ * @returns {Transaction}
+ */
 const uberTrip = (transaction) => {
   if (transaction.note.includes('uber')) {
     return {
@@ -7,8 +25,12 @@ const uberTrip = (transaction) => {
   }
 }
 
+/**
+ * @param {Transaction} transaction
+ * @returns {Transaction}
+ */
 const rappiRestaurant = (transaction) => {
-  if (transaction.note.includes('Rappi restaurante')) {
+  if (transaction.note.includes('rappi restaurante')) {
     return {
       ...transaction,
       category: 'restaurant'
@@ -16,8 +38,12 @@ const rappiRestaurant = (transaction) => {
   }
 }
 
+/**
+ * @param {Transaction} transaction
+ * @returns {Transaction}
+ */
 const rappiPrime = (transaction) => {
-  if (transaction.note.includes('Rappi prime')) {
+  if (transaction.note.includes('rappi prime')) {
     return {
       ...transaction,
       category: 'subscriptions'
@@ -25,6 +51,10 @@ const rappiPrime = (transaction) => {
   }
 }
 
+/**
+ * @param {Transaction} transaction
+ * @returns {Transaction}
+ */
 const movistarInternet = (transaction) => {
   if (
     transaction.note.includes('movistar') &&
@@ -37,6 +67,10 @@ const movistarInternet = (transaction) => {
   }
 }
 
+/**
+ * @param {Transaction} transaction
+ * @returns {Transaction}
+ */
 const movistarPhone = (transaction) => {
   if (
     transaction.note.includes('movistar') &&
@@ -50,6 +84,10 @@ const movistarPhone = (transaction) => {
   }
 }
 
+/**
+ * @param {Transaction} transaction
+ * @returns {Transaction}
+ */
 const mercadoPago = (transaction) => {
   if (transaction.note.includes('mercado pago')) {
     return {
@@ -59,6 +97,10 @@ const mercadoPago = (transaction) => {
   }
 }
 
+/**
+ * @param {Transaction} transaction
+ * @returns {Transaction}
+ */
 const bancolombia = (transaction) => {
   if (transaction.account === 'Bancolombia') {
     let category = 'other'
@@ -111,7 +153,7 @@ export const getTemplate = (transaction) => {
     if (result) return result
   }
 
-  console.log('transaction not match any template', transaction)
+  logger.warn(transaction, 'transaction not match any template')
 
   return {
     ...transaction,
