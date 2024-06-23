@@ -1,7 +1,6 @@
 import scotiabank from './scotiabank/scotiabank.js'
 import bancolombia from './bancolombia/bancolombia.js'
-
-const DEBUG_PARSER = process.env.DEBUG_PARSER
+import logger from '#root/utils/logger.js'
 
 export const parserConfigs = [
   scotiabank,
@@ -13,19 +12,21 @@ export const getParserConfig = (email) => {
     return parserConfig.email === email
   })
 
+  const DEBUG_PARSER = process.env.DEBUG_PARSER
+
   if (DEBUG_PARSER) {
-    console.log(`DEBUG_PARSER: ${DEBUG_PARSER}`)
+    logger.info(`parser: DEBUG_PARSER - ${DEBUG_PARSER}`)
     parserConfig = parserConfigs.find((parserConfig) => {
       return parserConfig.name === DEBUG_PARSER
     })
   }
 
   if (!parserConfig) {
-    console.log(`Parser not found for email: ${email}`)
+    logger.info(`parser: Parser not found for email ${email}`)
     return
   }
 
-  console.log('parserConfig', parserConfig.name)
+  logger.info(`parser: selected ${parserConfig.name}`)
   return parserConfig
 }
 
