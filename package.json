@@ -13,8 +13,8 @@
   "repository": "https://github.com/nathanredblur",
   "author": "nathanredblur",
   "scripts": {
-    "test": "NODE_ENV=test node --test src/",
-    "test:only": "NODE_ENV=test node --test --test-only src/",
+    "test": "NODE_ENV=test node --test",
+    "test:only": "NODE_ENV=test node --test --test-only",
     "lint": "eslint .",
     "eml-reader": "node src/eml-reader.js",
     "start": "node src/index.js"
