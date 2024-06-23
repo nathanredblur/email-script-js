@@ -1,12 +1,8 @@
 import { readFileSync } from 'fs'
 import Imap from 'imap'
 import { simpleParser } from 'mailparser'
-import { getParserConfig } from './parsers/index.js'
-
-import { addTransaction } from './budgetBankers.js'
 
 const conf = JSON.parse(readFileSync('./config.json'))
-const DEBUG_PARSER = process.env.DEBUG_PARSER
 
 const imap = new Imap(conf.imap)
 
@@ -66,11 +62,13 @@ const fetchHeader = (mnsNumber, cb) => {
   fetchEmail(mnsNumber, 'HEADER.FIELDS (FROM)', cb)
 }
 
-const fetchBody = (mnsNumber, cb) => {
-  fetchEmail(mnsNumber, 'TEXT', cb)
+export const fetchBody = (mnsNumber, cb) => {
+  fetchEmail(mnsNumber, 'TEXT', (seqno, bodyObj) => {
+    cb(bodyObj)
+  })
 }
 
-const innit = () => {
+export const onEmail = (cb) => {
   imap.once('ready', () => {
     openInbox((err, box) => {
       if (err) throw err
@@ -80,27 +78,7 @@ const innit = () => {
         console.log(`You have ${numNewMsgs} new messages`)
         fetchHeader([box.messages.total], (seqno, header) => {
           const email = header.from.value[0].address
-
-          // if email is not in the parser config, ignore it
-          const parserConfig = getParserConfig(email)
-
-          if (parserConfig) {
-            // fetch body and parse it
-            fetchBody(box.messages.total, (seqno, bodys) => {
-              const body = bodys.text
-              const transaction = parserConfig.getTransaction(body)
-
-              // validate transaction
-              if (transaction) {
-                if (DEBUG_PARSER) {
-                  transaction.note = `DEBUG_PARSER: ${DEBUG_PARSER}`
-                }
-
-                console.log('transactionObj', transaction)
-                addTransaction(transaction)
-              }
-            })
-          }
+          cb(email, box)
         })
       })
     })
@@ -116,5 +94,3 @@ const innit = () => {
 
   imap.connect()
 }
-
-export default innit

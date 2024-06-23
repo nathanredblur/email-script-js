@@ -1,4 +1,4 @@
-import { getTemplate } from '../templates.js'
+import { getTemplate } from '#root/transactions/templates.js'
 
 export const normalizeEmail = (email) => {
   if (!email) return

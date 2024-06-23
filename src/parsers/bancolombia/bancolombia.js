@@ -1,5 +1,6 @@
 import * as cheerio from 'cheerio'
 import { createTransactionObj } from '#root/utils/utils.js'
+import logger from '#root/utils/logger.js'
 
 const amountRegex = /(\d{1,3}(,\d{3})*(\.\d+)?)/
 const dateRegex = /(\d{2}\/\d{2}\/\d{4} \d{2}:\d{2})/
@@ -24,8 +25,8 @@ const getTransaction = (html) => {
 
   // validate is a transactional email from Bancolombia using header background color
   const headerTransaction = $('table[bgcolor="#fc7f41"]').text()
-  if (getText(headerTransaction) !== 'Notificación Transaccional') {
-    console.log('Is not a transactional email from Bancolombia')
+  if (!headerTransaction.includes('Transaccional')) {
+    logger.info('parser: Bancolombia HTML is not a transactional email')
     return
   }
 
@@ -33,7 +34,13 @@ const getTransaction = (html) => {
   const content = $('table table table:nth-child(4) table tr:nth-child(2) > td')
 
   // Validate is the correct html
-  if (!content.length) return
+  if (!content.length) {
+    logger.error({
+      html
+    }, 'parser: Bancolombia HTML is not correct')
+    return
+  }
+
   const contentText = content.text()
 
   let type = 'expense'
@@ -59,11 +66,24 @@ const getTransaction = (html) => {
     !date ||
     !note ||
     !/\d/.test(date) ||
-    !/\d/.test(amount) ||
-    date.length > 18
+    !/\d/.test(amount)
   ) {
-    console.log('data is not correct', { amount, date, note })
-    console.log('html', html)
+    logger.error({
+      amount,
+      date,
+      note,
+      error: {
+        amount: !amount,
+        date: !date,
+        note: !note,
+        dateHasNumbers: !/\d/.test(date),
+        amountHasNumbers: !/\d/.test(amount)
+      },
+      html
+    }, 'parser: Bancolombia data is not correct')
+
+    logger.log('data is not correct', { amount, date, note })
+    logger.log('html', html)
     return
   }
 

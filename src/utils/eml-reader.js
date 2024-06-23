@@ -1,9 +1,11 @@
 import EmlParser from 'eml-parser'
 import fs from 'fs'
 
-// get first argumnet from command line
-const emailFile = process.argv[2]
-
+/**
+ *
+ * @param {string} emlPath
+ * @returns
+ */
 const readEmailFile = (emlPath) => {
   if (!emlPath) {
     console.log('Please provide an email file')
@@ -22,11 +24,23 @@ const readEmailFile = (emlPath) => {
     .getEmailBodyHtml()
     .then(htmlString => {
       console.log(htmlString)
-      fs.writeFileSync('./app/parsers/test.html', htmlString)
+      fs.writeFileSync(
+        emlPath.replace('.eml', '.html'),
+        htmlString,
+        {
+          encoding: 'utf8',
+          flag: 'w'
+        },
+        (err) => {
+          if (err) throw err
+          console.log("It's saved!")
+        })
     })
     .catch(err => {
       console.log(err)
     })
 }
 
-readEmailFile(emailFile)
+// get first argumnet from command line
+const emlFilePath = process.argv[2]
+readEmailFile(emlFilePath)

@@ -3,7 +3,9 @@ import path from 'path'
 
 const targets = []
 
-if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
+const env = process.env.NODE_ENV || 'development'
+
+if (env === 'development' || env === 'test') {
   targets.push({
     target: 'pino-pretty'
   })
