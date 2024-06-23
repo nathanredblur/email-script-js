@@ -23,7 +23,7 @@ describe('Parser Scotiabank', () => {
     const htmlOrigin = getParserFixture('scotiabank', 'scotiabank1.html')
     const html = htmlOrigin.replace('RAPPI RESTAURANTE.', 'FAKE UNKNOWN')
 
-    mock.method(logger, 'warn')
+    mock.method(logger, 'warn', () => { })
 
     const transaction = parser.getTransaction(html)
     const call = logger.warn.mock.calls[0]
@@ -37,6 +37,38 @@ describe('Parser Scotiabank', () => {
       date: '2023/10/11 20:24:49',
       note: 'fake unknown',
       category: 'other'
+    })
+  })
+
+  it('invalid scottiabank html', () => {
+    const html = getParserFixture('scotiabank', 'scotiabank-invalid-html.html')
+
+    mock.method(logger, 'error', () => { })
+
+    const transaction = parser.getTransaction(html)
+    const call = logger.error.mock.calls[0]
+
+    assert.equal(call.arguments[1], 'parser: Scotiabank HTML is not correct')
+    assert.equal(transaction, undefined)
+  })
+
+  it('invalid scottiabank data', () => {
+    const html = getParserFixture('scotiabank', 'scotiabank-invalid-data.html')
+
+    mock.method(logger, 'error', () => { })
+
+    const transaction = parser.getTransaction(html)
+    const call = logger.error.mock.calls[0]
+
+    assert.equal(call.arguments[1], 'parser: Scotiabank data is not correct')
+    assert.equal(transaction, undefined)
+
+    console.log(call.arguments[0].error)
+
+    const keys = Object.keys(call.arguments[0].error)
+
+    keys.forEach((key) => {
+      assert.equal(call.arguments[0].error[key], true)
     })
   })
 })

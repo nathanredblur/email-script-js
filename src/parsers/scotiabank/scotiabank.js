@@ -13,10 +13,15 @@ const getTransaction = (html) => {
   const cells = $('table').eq(1).find('tr').eq(1).find('td')
 
   // check if the html is the correct one
-  if (!cells.length) return
+  if (!cells.length) {
+    logger.error({
+      html
+    }, 'parser: Scotiabank HTML is not correct')
+    return
+  }
 
   const amount = cells.eq(1).text()
-  const date = `${cells.eq(2).text()} ${cells.eq(3).text()}`
+  const date = `${cells.eq(2).text()} ${cells.eq(3).text()}`.trim()
   const note = cells.eq(0).text()
 
   // validate data not exist or is incorrect like
@@ -29,7 +34,7 @@ const getTransaction = (html) => {
     !/\d/.test(amount) ||
     !isDateString(date)
   ) {
-    logger.error('parser: Scotiabank data is not correct', {
+    logger.error({
       amount,
       date,
       note,
@@ -42,7 +47,7 @@ const getTransaction = (html) => {
         isDateString: !isDateString(date)
       },
       html
-    })
+    }, 'parser: Scotiabank data is not correct')
     return
   }
 
