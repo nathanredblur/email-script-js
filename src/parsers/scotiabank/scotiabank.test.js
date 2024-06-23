@@ -5,7 +5,7 @@ import parser from '#root/parsers/scotiabank/scotiabank.js'
 import logger from '#root/utils/logger.js'
 
 describe('Parser Scotiabank', () => {
-  it('get data from scotiabank html email and match a template', () => {
+  it('should return a transaction object with correct properties', () => {
     const html = getParserFixture('scotiabank', 'scotiabank1.html')
     const transaction = parser.getTransaction(html)
 
@@ -19,7 +19,7 @@ describe('Parser Scotiabank', () => {
     })
   })
 
-  it('get data from scotiabank html email and NOT match a template', () => {
+  it('should return a fallback transaction object NOT match a transaction template', () => {
     const htmlOrigin = getParserFixture('scotiabank', 'scotiabank1.html')
     const html = htmlOrigin.replace('RAPPI RESTAURANTE.', 'FAKE UNKNOWN')
 
@@ -28,7 +28,7 @@ describe('Parser Scotiabank', () => {
     const transaction = parser.getTransaction(html)
     const call = logger.warn.mock.calls[0]
 
-    assert.equal(call.arguments[1], 'transaction not match any template')
+    assert.equal(call.arguments[1], 'templates: transaction not match any template')
 
     assert.deepEqual(transaction, {
       type: 'expense',
@@ -40,7 +40,7 @@ describe('Parser Scotiabank', () => {
     })
   })
 
-  it('invalid scottiabank html', () => {
+  it('should return a undefined with html is invalid', () => {
     const html = getParserFixture('scotiabank', 'scotiabank-invalid-html.html')
 
     mock.method(logger, 'error', () => { })
@@ -52,7 +52,7 @@ describe('Parser Scotiabank', () => {
     assert.equal(transaction, undefined)
   })
 
-  it('invalid scottiabank data', () => {
+  it('should return undefined when the HTML is correct but the data is not correct', () => {
     const html = getParserFixture('scotiabank', 'scotiabank-invalid-data.html')
 
     mock.method(logger, 'error', () => { })
@@ -62,8 +62,6 @@ describe('Parser Scotiabank', () => {
 
     assert.equal(call.arguments[1], 'parser: Scotiabank data is not correct')
     assert.equal(transaction, undefined)
-
-    console.log(call.arguments[0].error)
 
     const keys = Object.keys(call.arguments[0].error)
 

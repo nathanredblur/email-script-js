@@ -153,7 +153,7 @@ export const getTemplate = (transaction) => {
     if (result) return result
   }
 
-  logger.warn(transaction, 'transaction not match any template')
+  logger.warn(transaction, 'templates: transaction not match any template')
 
   return {
     ...transaction,
